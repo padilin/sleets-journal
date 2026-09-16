@@ -23,8 +23,9 @@ const {
     <title>{title}</title>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to journal content</a>
     <SiteHeader />
-    <main>
+    <main id="main-content">
       <slot />
     </main>
     <footer>

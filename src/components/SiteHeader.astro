@@ -1,8 +1,13 @@
+---
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => href === "/" ? path === href : path.startsWith(href);
+---
+
 <header class="site-header">
   <a class="site-title" href="/">Sleet's Journal</a>
   <nav aria-label="Primary navigation">
-    <a href="/journal/">Journal</a>
-    <a href="/search/">Search</a>
-    <a href="/about/">About</a>
+    <a href="/journal/" aria-current={isCurrent("/journal/") ? "page" : undefined}>Journal</a>
+    <a href="/search/" aria-current={isCurrent("/search/") ? "page" : undefined}>Search</a>
+    <a href="/about/" aria-current={isCurrent("/about/") ? "page" : undefined}>About</a>
   </nav>
 </header>

@@ -10,23 +10,31 @@ const latest = entries[0];
 ---
 
 <BaseLayout>
-  <section class="page-panel home-intro">
-    <p class="eyebrow">An adventurer's field journal</p>
-    <h1>Sleet's Journal</h1>
-    <p class="home-intro-summary">
-      Sleet's account of the roads traveled, places found, and lessons learned along the way.
-    </p>
-    {
-      latest && (
-        <a class="button" href={`/journal/${latest.id}/`}>
-          Read the latest entry <span aria-hidden="true">→</span>
-        </a>
-      )
-    }
-  </section>
+  <section class="page-panel home-spread">
+    <div class="home-intro">
+      <p class="eyebrow">An adventurer's field journal</p>
+      <h1>Sleet's Journal</h1>
+      <p class="home-intro-summary">
+        Sleet's account of the roads traveled, places found, and lessons learned along the way.
+      </p>
+      {
+        latest && (
+          <a class="button" href={`/journal/${latest.id}/`}>
+            Read the latest entry <span aria-hidden="true">→</span>
+          </a>
+        )
+      }
+    </div>
 
-  <section class="page-panel">
-    <h2>Recent entries</h2>
-    <EntryList entries={entries.slice(0, 5)} />
+    <div class="home-recent">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">From the road</p>
+          <h2>Recent entries</h2>
+        </div>
+        <a class="text-link" href="/journal/">View all</a>
+      </div>
+      <EntryList entries={entries.slice(0, 5)} />
+    </div>
   </section>
 </BaseLayout>

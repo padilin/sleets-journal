@@ -10,7 +10,11 @@ const entries = (await getCollection("journal", ({ data }) => !data.draft)).sort
 
 <BaseLayout title="Journal Index | Sleet's Journal">
   <section class="page-panel journal-index">
+    <p class="eyebrow">Field notes from the road</p>
     <h1>Journal index</h1>
+    <p class="journal-index-intro">
+      {entries.length} {entries.length === 1 ? "entry" : "entries"}, recorded in the order they happened.
+    </p>
     <EntryList {entries} />
   </section>
 </BaseLayout>

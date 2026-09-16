@@ -166,4 +166,4 @@ Content Security Policy is intentionally deferred until the site's actual script
 
 ## Scope of this scaffold
 
-The index, entry rendering, previous/next navigation, journal/global styling split, search page placeholder, and about page placeholder are present. Full-text search, People/Places pages, page-turn animation, analytics, and custom journal syntax are intentionally left for later work driven by real content.
+The index, entry rendering, previous/next navigation, journal/global styling split, client-side journal search, and about page placeholder are present. People/Places pages, page-turn animation, analytics, and custom journal syntax are intentionally left for later work driven by real content.
