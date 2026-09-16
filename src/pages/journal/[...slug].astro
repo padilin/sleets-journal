@@ -1,0 +1,39 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import JournalLayout from "../../layouts/JournalLayout.astro";
+
+interface Props {
+  entry: CollectionEntry<"journal">;
+  previous?: CollectionEntry<"journal">;
+  next?: CollectionEntry<"journal">;
+}
+
+export async function getStaticPaths() {
+  const entries = (await getCollection("journal", ({ data }) => !data.draft)).sort(
+    (a, b) => a.data.entry - b.data.entry,
+  );
+
+  return entries.map((entry, index) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      previous: entries[index - 1],
+      next: entries[index + 1],
+    },
+  }));
+}
+
+const { entry, previous, next } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<JournalLayout
+  title={entry.data.title}
+  entry={entry.data.entry}
+  dateDisplay={entry.data.date_display}
+  location={entry.data.location}
+  previous={previous && { href: `/journal/${previous.id}/`, title: previous.data.title }}
+  next={next && { href: `/journal/${next.id}/`, title: next.data.title }}
+>
+  <Content />
+</JournalLayout>

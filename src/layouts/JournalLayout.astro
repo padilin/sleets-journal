@@ -1,0 +1,32 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import JournalHeader from "../components/JournalHeader.astro";
+import JournalNavigation from "../components/JournalNavigation.astro";
+import "../styles/journal.css";
+
+interface Link {
+  href: string;
+  title: string;
+}
+
+interface Props {
+  title: string;
+  entry: number;
+  dateDisplay: string;
+  location: string;
+  previous?: Link;
+  next?: Link;
+}
+
+const { title, entry, dateDisplay, location, previous, next } = Astro.props;
+---
+
+<BaseLayout title={`${title} | Sleet's Journal`}>
+  <article class="journal-page">
+    <JournalHeader {title} {entry} {dateDisplay} {location} />
+    <div class="journal-content">
+      <slot />
+    </div>
+  </article>
+  <JournalNavigation {previous} {next} />
+</BaseLayout>

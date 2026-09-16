@@ -1,0 +1,16 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import EntryList from "../../components/EntryList.astro";
+
+const entries = (await getCollection("journal", ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.entry - b.data.entry,
+);
+---
+
+<BaseLayout title="Journal Index | Sleet's Journal">
+  <section class="page-panel journal-index">
+    <h1>Journal index</h1>
+    <EntryList {entries} />
+  </section>
+</BaseLayout>

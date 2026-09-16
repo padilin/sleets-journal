@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "sleet-journal",
+  "compatibility_date": "2026-09-15",
+  "assets": {
+    "directory": "./dist"
+  },
+  "routes": [
+    {
+      "pattern": "sleet.adventure.pub",
+      "custom_domain": true
+    }
+  ]
+}

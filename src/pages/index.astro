@@ -1,0 +1,24 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import EntryList from "../components/EntryList.astro";
+
+const entries = (await getCollection("journal", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.entry - a.data.entry,
+);
+const latest = entries[0];
+---
+
+<BaseLayout>
+  <section class="page-panel">
+    <p class="eyebrow">An adventurer's field journal</p>
+    <h1>Sleet's Journal</h1>
+    <p>Plain Markdown entries, presented as the journal Sleet carries through the campaign.</p>
+    {latest && <a class="button" href={`/journal/${latest.id}/`}>Read the latest entry</a>}
+  </section>
+
+  <section class="page-panel">
+    <h2>Recent entries</h2>
+    <EntryList entries={entries.slice(0, 5)} />
+  </section>
+</BaseLayout>

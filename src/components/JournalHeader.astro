@@ -1,0 +1,20 @@
+---
+interface Props {
+  title: string;
+  entry: number;
+  dateDisplay: string;
+  location: string;
+}
+
+const { title, entry, dateDisplay, location } = Astro.props;
+---
+
+<header class="journal-header">
+  <p class="journal-entry-number">Entry {entry}</p>
+  <h1>{title}</h1>
+  <p class="journal-meta">
+    <span>{dateDisplay}</span>
+    <span aria-hidden="true">·</span>
+    <span>{location}</span>
+  </p>
+</header>

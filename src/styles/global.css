@@ -1,0 +1,133 @@
+:root {
+  color-scheme: light;
+  --paper: #e7dcc3;
+  --paper-light: #f5eddc;
+  --ink: #29241d;
+  --ink-soft: #51493d;
+  --ink-faded: #746957;
+  --desk: #514739;
+  --rule: rgb(69 58 43 / 22%);
+  --shadow: rgb(31 24 15 / 28%);
+  --page-width: 760px;
+  --font-body: "Libre Baskerville", Georgia, serif;
+  --font-hand: "Segoe Print", "Bradley Hand", cursive;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--desk);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.7;
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 0.2em;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1rem clamp(1rem, 5vw, 3rem);
+  color: var(--paper-light);
+}
+
+.site-header nav {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.site-title {
+  font-family: var(--font-hand);
+  font-size: 1.35rem;
+  text-decoration: none;
+}
+
+main {
+  min-height: calc(100vh - 10rem);
+}
+
+footer {
+  padding: 1rem;
+  color: var(--paper-light);
+  text-align: center;
+}
+
+.page-panel {
+  max-width: var(--page-width);
+  margin: 2rem auto;
+  padding: clamp(1.5rem, 5vw, 3rem);
+  background: var(--paper-light);
+  box-shadow: 0 10px 35px var(--shadow);
+}
+
+.eyebrow,
+.entry-number,
+.entry-location {
+  color: var(--ink-faded);
+}
+
+.button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--ink-soft);
+  text-decoration: none;
+}
+
+.entry-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entry-list li {
+  display: grid;
+  grid-template-columns: 3rem 1fr auto;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px dotted var(--rule);
+}
+
+.search-placeholder label,
+.search-placeholder input {
+  display: block;
+  width: 100%;
+}
+
+.search-placeholder input {
+  margin-top: 0.4rem;
+  padding: 0.75rem;
+  font: inherit;
+}
+
+@media (max-width: 600px) {
+  .site-header,
+  .entry-list li {
+    align-items: flex-start;
+  }
+
+  .site-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .entry-list li {
+    grid-template-columns: 3rem 1fr;
+  }
+
+  .entry-location {
+    grid-column: 2;
+  }
+}

@@ -1,0 +1,22 @@
+---
+interface Link {
+  href: string;
+  title: string;
+}
+
+interface Props {
+  previous?: Link;
+  next?: Link;
+}
+
+const { previous, next } = Astro.props;
+---
+
+<nav class="journal-navigation" aria-label="Journal entries">
+  <div>
+    {previous && <a href={previous.href}>← {previous.title}</a>}
+  </div>
+  <div class="next">
+    {next && <a href={next.href}>{next.title} →</a>}
+  </div>
+</nav>
