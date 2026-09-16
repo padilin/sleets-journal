@@ -146,7 +146,6 @@ footer p {
   font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: 0.14em;
-  text-align: center;
   text-transform: uppercase;
 }
 
@@ -157,23 +156,49 @@ footer p {
 }
 
 .button {
-  display: inline-block;
-  margin-top: 1.25rem;
-  padding: 0.75rem 1.1rem;
-  color: var(--paper-light);
-  background: var(--desk);
-  border: 1px solid var(--desk);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1.5rem;
+  padding: 0.72rem 1rem;
+  color: #224b5d;
+  background: rgb(220 235 240 / 72%);
+  border: 1px solid var(--frost);
   font-family: var(--font-ui);
   font-size: 0.82rem;
   font-weight: 650;
   letter-spacing: 0.04em;
   text-decoration: none;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 
 .button:hover,
 .button:focus-visible {
-  background: #244657;
-  border-color: #244657;
+  color: #153440;
+  background: var(--ice);
+  border-color: #8fb6c6;
+}
+
+.button span {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.home-intro {
+  padding-block: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.home-intro h1 {
+  margin: 0.45rem 0 0.85rem;
+  font-size: clamp(2.65rem, 6vw, 3.8rem);
+}
+
+.home-intro-summary {
+  max-width: 38rem;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: clamp(1rem, 2vw, 1.08rem);
+  line-height: 1.65;
 }
 
 .entry-list {
