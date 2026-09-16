@@ -12,8 +12,15 @@ const { entries } = Astro.props;
   {entries.map((entry) => (
     <li>
       <span class="entry-number">{String(entry.data.entry).padStart(3, "0")}</span>
-      <a href={`/journal/${entry.id}/`}>{entry.data.title}</a>
-      <span class="entry-location">{entry.data.location}</span>
+      <a class="entry-link" href={`/journal/${entry.id}/`}>
+        <span class="entry-title">{entry.data.title}</span>
+        <span class="entry-details">
+          <span>{entry.data.date_display}</span>
+          <span aria-hidden="true">·</span>
+          <span>{entry.data.location}</span>
+        </span>
+      </a>
+      <span class="entry-arrow" aria-hidden="true">→</span>
     </li>
   ))}
 </ol>

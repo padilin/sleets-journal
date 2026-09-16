@@ -1,10 +1,15 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Search from "../components/Search.astro";
+
+const entries = (await getCollection("journal", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.entry - a.data.entry,
+);
 ---
 
 <BaseLayout title="Search | Sleet's Journal">
-  <section class="page-panel">
-    <Search />
+  <section class="page-panel search-panel">
+    <Search {entries} />
   </section>
 </BaseLayout>

@@ -13,9 +13,10 @@ const { previous, next } = Astro.props;
 ---
 
 <nav class="journal-navigation" aria-label="Journal entries">
-  <div>
+  <div class="previous">
     {previous && <a href={previous.href}>← {previous.title}</a>}
   </div>
+  <a class="journal-index-link" href="/journal/">Journal index</a>
   <div class="next">
     {next && <a href={next.href}>{next.title} →</a>}
   </div>

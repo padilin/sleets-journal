@@ -33,4 +33,4 @@ I was practically wearing strips of hide and fur until I met merchants willing t
 
 That was an early lesson.
 
-![A concise description.](../../assets/journal/001/sleet.png)
+![Sleet, a white dragonborn ranger in fur-lined armor, standing in a snowy mountain landscape.](../../assets/journal/001/sleet.png)

@@ -27,6 +27,7 @@ const { title, entry, dateDisplay, location, previous, next } = Astro.props;
     <div class="journal-content">
       <slot />
     </div>
+    <p class="entry-ending">End of entry {String(entry).padStart(3, "0")}</p>
   </article>
   <JournalNavigation {previous} {next} />
 </BaseLayout>
