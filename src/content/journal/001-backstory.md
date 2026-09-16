@@ -25,7 +25,7 @@ Surviving out here is easier in some ways. There is far more prey, and plants se
 
 Forests were strange at first. So many trees packed together that you can't see the horizon. I was surprised to learn that many people avoid them. I rather like them now. They're quiet. When I want company I can return to the roads and towns, and when I don't, the woods give me plenty of room.
 
-Eventually I learned that people will pay someone who knows how to move through the wilderness. Guiding travelers, hunting, finding trails, keeping watch—it all came naturally enough. Money was the part I had to learn.
+Eventually I learned that people will pay someone who knows how to move through the wilderness. Guiding travelers, hunting, finding trails, keeping watch. It all came naturally enough. Money was the part I had to learn.
 
 It turns out money is useful.
 
