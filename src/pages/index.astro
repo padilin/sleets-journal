@@ -10,11 +10,19 @@ const latest = entries[0];
 ---
 
 <BaseLayout>
-  <section class="page-panel">
+  <section class="page-panel home-intro">
     <p class="eyebrow">An adventurer's field journal</p>
     <h1>Sleet's Journal</h1>
-    <p>Plain Markdown entries, presented as the journal Sleet carries through the campaign.</p>
-    {latest && <a class="button" href={`/journal/${latest.id}/`}>Read the latest entry</a>}
+    <p class="home-intro-summary">
+      Sleet's account of the roads traveled, places found, and lessons learned along the way.
+    </p>
+    {
+      latest && (
+        <a class="button" href={`/journal/${latest.id}/`}>
+          Read the latest entry <span aria-hidden="true">→</span>
+        </a>
+      )
+    }
   </section>
 
   <section class="page-panel">
