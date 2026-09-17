@@ -98,6 +98,14 @@
   animation-fill-mode: both;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(journal-page),
+  ::view-transition-old(journal-page),
+  ::view-transition-new(journal-page) {
+    animation: none !important;
+  }
+}
+
 html[data-page-turn-direction="next"]::view-transition-old(journal-page),
 html[data-astro-transition="forward"]:not([data-page-turn-direction])::view-transition-old(journal-page) {
   z-index: 2;

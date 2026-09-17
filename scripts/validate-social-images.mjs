@@ -2,6 +2,7 @@ import { access, readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
+import { extractSocialImage, resolveSocialImagePath } from "./social-image-paths.mjs";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const publicDirectory = path.join(repositoryRoot, "public");
@@ -41,15 +42,6 @@ async function validateImage(imagePath) {
   }
 }
 
-function extractSocialImage(frontmatter) {
-  const socialBlock = frontmatter.match(/^social:\s*\r?\n((?:^[ \t]+.*(?:\r?\n|$))*)/m)?.[1];
-  if (!socialBlock) return undefined;
-
-  return socialBlock
-    .match(/^\s+image:\s*["']?([^"'\r\n]+)["']?\s*$/m)?.[1]
-    ?.trim();
-}
-
 try {
   await access(path.join(socialDirectory, "default.png"));
 } catch {
@@ -72,15 +64,23 @@ for (const entryPath of await collectFiles(journalDirectory)) {
   const frontmatter = source.match(/^---\s*\r?\n([\s\S]*?)\r?\n---/)?.[1];
   if (!frontmatter) continue;
 
-  const image = extractSocialImage(frontmatter);
+  let image;
+  try {
+    image = extractSocialImage(frontmatter);
+  } catch (error) {
+    errors.push(`${path.relative(repositoryRoot, entryPath)}: could not parse frontmatter (${error.message}).`);
+    continue;
+  }
   if (!image) continue;
 
-  if (!image.startsWith("/social/")) {
-    errors.push(`${path.relative(repositoryRoot, entryPath)}: social image must start with /social/.`);
+  let imagePath;
+  try {
+    imagePath = resolveSocialImagePath(publicDirectory, socialDirectory, image);
+  } catch (error) {
+    errors.push(`${path.relative(repositoryRoot, entryPath)}: ${error.message}.`);
     continue;
   }
 
-  const imagePath = path.join(publicDirectory, ...image.split("/").filter(Boolean));
   try {
     await access(imagePath);
   } catch {

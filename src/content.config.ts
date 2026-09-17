@@ -2,6 +2,13 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
+const socialImagePath = z
+  .string()
+  .regex(/^\/social\/.+\.(?:png|jpe?g|webp)$/i)
+  .refine((image) => new URL(image, "https://sleet.adventure.pub").pathname === image, {
+    message: "Social image paths must be canonical paths under /social/ without dot segments.",
+  });
+
 const journal = defineCollection({
   loader: glob({
     pattern: "**/*.md",
@@ -21,7 +28,7 @@ const journal = defineCollection({
       tags: z.array(z.string()).default([]),
       social: z
         .object({
-          image: z.string().regex(/^\/social\/.+\.(?:png|jpe?g|webp)$/i),
+          image: socialImagePath,
           image_alt: z.string().min(1),
         })
         .optional(),

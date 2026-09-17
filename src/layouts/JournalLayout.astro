@@ -94,6 +94,11 @@ const { title, summary, entry, dateDisplay, location, social, previous, next } =
     { capture: true },
   );
 
+  document.addEventListener("astro:before-swap", (event) => {
+    const direction = document.documentElement.dataset.pageTurnDirection;
+    if (direction) event.newDocument.documentElement.dataset.pageTurnDirection = direction;
+  });
+
   document.addEventListener("astro:after-swap", () => {
     if (document.documentElement.dataset.pageTurnDirection) {
       window.scrollTo({ top: 0, left: 0, behavior: "instant" });
