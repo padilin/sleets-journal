@@ -5,12 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "pnpm validate:social && astro build",
     "preview": "astro preview",
-    "check": "astro check",
+    "check": "pnpm validate:social && pnpm test && astro check",
+    "generate:social": "node scripts/generate-social-images.mjs",
+    "test": "node --test",
+    "validate:social": "node scripts/validate-social-images.mjs",
     "deploy": "pnpm build && wrangler deploy"
   },
   "devDependencies": {
+    "@astrojs/markdown-remark": "^7.3.1",
     "@astrojs/check": "^0.9.10",
     "astro": "^7.3.3",
     "typescript": "^6.0.3",

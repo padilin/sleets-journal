@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">Sleet's Journal</title>
+  <desc id="description">A cream journal card resting on a dark blue background.</desc>
+  <defs>
+    <linearGradient id="desk" x1="70" y1="20" x2="1130" y2="610" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#183542" />
+      <stop offset="1" stop-color="#0c1921" />
+    </linearGradient>
+    <radialGradient id="frost" cx="0" cy="0" r="1" gradientTransform="translate(170 80) rotate(33) scale(470 290)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#96c4d6" stop-opacity="0.22" />
+      <stop offset="1" stop-color="#96c4d6" stop-opacity="0" />
+    </radialGradient>
+    <filter id="paper-shadow" x="-20%" y="-25%" width="140%" height="160%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#031119" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#desk)" />
+  <rect width="1200" height="630" fill="url(#frost)" />
+
+  <g filter="url(#paper-shadow)">
+    <rect x="82" y="64" width="1036" height="502" rx="3" fill="#f3f0e7" />
+    <rect x="94" y="76" width="1012" height="478" rx="1" fill="none" stroke="#3f5b69" stroke-opacity="0.22" stroke-width="2" />
+  </g>
+
+  <line x1="190" y1="76" x2="190" y2="554" stroke="#5e92a9" stroke-opacity="0.24" stroke-width="2" />
+  <line x1="232" y1="188" x2="1024" y2="188" stroke="#3f5b69" stroke-opacity="0.18" stroke-width="2" />
+  <line x1="232" y1="444" x2="1024" y2="444" stroke="#3f5b69" stroke-opacity="0.18" stroke-width="2" />
+
+  <text x="232" y="151" fill="#3a7189" font-family="Segoe Print, Bradley Hand, cursive" font-size="28" letter-spacing="1">An adventurer's field journal</text>
+  <text x="232" y="318" fill="#18252e" font-family="Iowan Old Style, Palatino Linotype, Palatino, Georgia, serif" font-size="84" font-weight="500" letter-spacing="-3">Sleet's Journal</text>
+  <text x="234" y="375" fill="#40515d" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="25" letter-spacing="4">NOTES FROM THE ROAD</text>
+
+  <text x="232" y="500" fill="#6b7b84" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="20" letter-spacing="2.5">SLEET.ADVENTURE.PUB</text>
+  <path d="M995 109h71v71" fill="none" stroke="#5e92a9" stroke-opacity="0.28" stroke-width="2" />
+  <path d="M134 451v61h61" fill="none" stroke="#5e92a9" stroke-opacity="0.2" stroke-width="2" />
+</svg>

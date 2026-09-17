@@ -1,5 +1,6 @@
 ---
 title: "Backstory"
+summary: "Sleet recalls his isolated childhood and the journey that first carried him beyond the frozen plains."
 entry: 1
 session: 1
 date: "0000-00-00"
@@ -22,6 +23,8 @@ Well, it turns out the world isn't as warm as I expected.
 The snow thins the farther south you walk. Underneath it there are colors everywhere. I had never seen so much green. The villages are stranger still. Some are hardly more than a few tents. Others have walls, streets, and permanent buildings large enough that I think my entire village could fit inside one.
 
 Surviving out here is easier in some ways. There is far more prey, and plants seem to grow almost everywhere. Food is also more troublesome than I expected. Meat goes rancid incredibly quickly when you don't have the cold to keep it. I learned that lesson more than once. Better to throw spoiled meat to the wolves than fight them over something I shouldn't eat anyway.
+
+![A quick field sketch of a narrow trail winding between snow-covered pine trees, crossed by animal tracks.](../../assets/journal/001/sketch-forest-trail.png)
 
 Forests were strange at first. So many trees packed together that you can't see the horizon. I was surprised to learn that many people avoid them. I rather like them now. They're quiet. When I want company I can return to the roads and towns, and when I don't, the woods give me plenty of room.
 

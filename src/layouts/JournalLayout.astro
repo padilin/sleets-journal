@@ -2,6 +2,7 @@
 import BaseLayout from "./BaseLayout.astro";
 import JournalHeader from "../components/JournalHeader.astro";
 import JournalNavigation from "../components/JournalNavigation.astro";
+import ReadingTools from "../components/ReadingTools.astro";
 import "../styles/journal.css";
 
 interface Link {
@@ -11,18 +12,30 @@ interface Link {
 
 interface Props {
   title: string;
+  summary: string;
   entry: number;
   dateDisplay: string;
   location: string;
+  social?: {
+    image: string;
+    image_alt: string;
+  };
   previous?: Link;
   next?: Link;
 }
 
-const { title, entry, dateDisplay, location, previous, next } = Astro.props;
+const { title, summary, entry, dateDisplay, location, social, previous, next } = Astro.props;
 ---
 
-<BaseLayout title={`${title} | Sleet's Journal`}>
-  <article class="journal-page">
+<BaseLayout
+  title={`${title} | Sleet's Journal`}
+  description={summary}
+  pageType="article"
+  socialImage={social && { src: social.image, alt: social.image_alt }}
+  enableTransitions
+>
+  <ReadingTools />
+  <article id="journal-entry" class="journal-page">
     <JournalHeader {title} {entry} {dateDisplay} {location} />
     <div class="journal-content">
       <slot />
@@ -30,4 +43,66 @@ const { title, entry, dateDisplay, location, previous, next } = Astro.props;
     <p class="entry-ending">End of entry {String(entry).padStart(3, "0")}</p>
   </article>
   <JournalNavigation {previous} {next} />
+
+  <script>
+  const pageTurnLinkSelector = "a[data-page-turn]";
+  const pageTurnDuration = 650;
+  let pageTurnInProgress = false;
+  let pageTurnReset: number | undefined;
+
+  const clearPageTurn = () => {
+    pageTurnInProgress = false;
+    delete document.documentElement.dataset.pageTurnDirection;
+  };
+
+  document.addEventListener(
+    "click",
+    (event) => {
+      if (!(event.target instanceof Element)) return;
+
+      const link = event.target.closest<HTMLAnchorElement>(pageTurnLinkSelector);
+      if (!link) {
+        clearPageTurn();
+        return;
+      }
+
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
+      if (pageTurnInProgress) {
+        event.preventDefault();
+        return;
+      }
+
+      const direction = link.dataset.pageTurn;
+      if (direction !== "previous" && direction !== "next") return;
+
+      pageTurnInProgress = true;
+      document.documentElement.dataset.pageTurnDirection = direction;
+
+      window.clearTimeout(pageTurnReset);
+      pageTurnReset = window.setTimeout(clearPageTurn, 2000);
+    },
+    { capture: true },
+  );
+
+  document.addEventListener("astro:after-swap", () => {
+    if (document.documentElement.dataset.pageTurnDirection) {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }
+  });
+
+  document.addEventListener("astro:page-load", () => {
+    window.clearTimeout(pageTurnReset);
+    pageTurnReset = window.setTimeout(clearPageTurn, pageTurnDuration);
+  });
+  </script>
 </BaseLayout>

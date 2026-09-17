@@ -57,6 +57,7 @@ Copy the sample entry, give the file its next zero-padded number and slug, and u
 ```md
 ---
 title: "The Road South"
+summary: "Sleet follows the frost road south and finds a troubling mark carved into an old road marker."
 entry: 7
 session: 5
 date: "1492-10-14"
@@ -79,11 +80,43 @@ The mountains are smaller behind us today.
 
 The body uses ordinary Markdown only. Use paragraphs, headings, links, blockquotes, lists, horizontal rules, and images. Do not add Astro components, JSX, Markdoc tags, or MDX imports to an entry.
 
+### Photos and sketches
+
+Images use one of two visual treatments based on their filename:
+
+- Other image names keep the taped photo-paper treatment.
+- Names beginning with `sketch-` are rendered like drawings on the journal paper: no photo backing, border, shadow, or tape. At full page width they sit to the right while the text wraps beside them. On narrow screens they return to the normal document flow so the writing stays readable.
+
+Both treatments retain a slight angle. The distinction does not require custom Markdown:
+
+```md
+![Sleet standing in a snowy mountain landscape.](../../assets/journal/001/sleet.png)
+
+![A quick sketch of tracks crossing the frozen river.](../../assets/journal/001/sketch-frozen-river.png)
+```
+
+Sketch files work best with a transparent background cropped reasonably close to the drawing. Keep meaningful alternative text just as you would for a photo.
+
+### Optional image captions
+
+Add a visible caption with standard Markdown's optional image title. The alternative text should describe the image for someone who cannot see it; the quoted title is the separate caption readers will see:
+
+```md
+![A weathered stone marker beside the road.](../../assets/journal/007/road-marker.png "The mark we found before dusk.")
+```
+
+An image with a title is rendered as a semantic `<figure>` with a `<figcaption>`. Images without titles keep their existing presentation without an empty caption.
+
+### Reading tools
+
+Journal entries include a thin progress line at the top of the viewport. Long entries also reveal a back-to-top link after the reader has moved meaningfully into the entry. These controls do not alter entry Markdown, and the journal remains fully readable when JavaScript is unavailable.
+
 ### Frontmatter fields
 
 | Field | Type | Purpose |
 | --- | --- | --- |
 | `title` | string | Entry title shown to readers. |
+| `summary` | string | Short description used in metadata and social previews. Required for published entries. |
 | `entry` | positive integer | Canonical journal order and displayed entry number. |
 | `session` | positive integer | Campaign session that produced the entry. |
 | `date` | string | Machine-sortable in-world date, normally `YYYY-MM-DD`. |
@@ -92,7 +125,20 @@ The body uses ordinary Markdown only. Use paragraphs, headings, links, blockquot
 | `location` | string | In-world location shown on the entry and index. |
 | `people` | string array | People mentioned; retained for future indexes. Defaults to `[]`. |
 | `tags` | string array | Topics retained for future filtering. Defaults to `[]`. |
+| `social` | object | Optional explicit social image with `image` and `image_alt`. Images must live under `public/social/`. |
 | `draft` | boolean | When `true`, excludes the entry from generated public pages. Defaults to `false`. |
+
+### Social previews
+
+All pages use the artwork-free `public/social/default.png` card unless an entry explicitly provides a custom image:
+
+```yaml
+social:
+  image: "/social/journal/007-the-road-south.png"
+  image_alt: "The title The Road South on a journal card beside an approved illustration."
+```
+
+Social images are never selected automatically from entry content. Custom cards must be 1200 by 630 pixels and use PNG, JPEG, or WebP. Run `pnpm generate:social` to rebuild the default card from its SVG source and `pnpm validate:social` to check committed social assets.
 
 The schema validates types at build time. Dates remain strings because the fantasy calendar's display value is intentionally separate from chronology and real-world session metadata.
 

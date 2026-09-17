@@ -1,3 +1,75 @@
+:root {
+  --page-turn-duration: 420ms;
+  --page-turn-distance: 5%;
+  --page-turn-incoming-distance: 2.5%;
+  --page-turn-rotation: 2deg;
+  --page-turn-perspective: 1200px;
+  --page-turn-shadow-offset: 24px;
+  --page-turn-shadow-blur: 22px;
+  --page-turn-shadow-strength: 24%;
+}
+
+.reading-progress {
+  --reading-progress: 0;
+
+  position: fixed;
+  z-index: 20;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.reading-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #83b9cf, var(--ice));
+  box-shadow: 0 0 0.7rem rgb(131 185 207 / 45%);
+  transform: scaleX(var(--reading-progress));
+  transform-origin: left center;
+}
+
+.back-to-entry-top {
+  position: fixed;
+  z-index: 15;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 0.85rem;
+  color: var(--ink);
+  background: rgb(243 240 231 / 94%);
+  border: 1px solid rgb(184 211 223 / 72%);
+  box-shadow: 0 0.75rem 2rem rgb(3 17 25 / 28%);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+.back-to-entry-top[hidden] {
+  display: none;
+}
+
+.back-to-entry-top:hover,
+.back-to-entry-top:focus-visible {
+  background: var(--paper-light);
+  border-color: #83b9cf;
+  transform: translateY(-2px);
+}
+
+.back-to-entry-top > span[aria-hidden="true"] {
+  color: #3a7189;
+  font-size: 1rem;
+  line-height: 1;
+}
+
 .journal-page {
   position: relative;
   max-width: var(--page-width);
@@ -8,6 +80,120 @@
     var(--paper);
   border: 1px solid rgb(255 255 255 / 32%);
   box-shadow: 0 3px 7px rgb(0 0 0 / 18%), 0 24px 70px var(--shadow);
+  scroll-margin-top: 1rem;
+  view-transition-name: journal-page;
+}
+
+::view-transition-group(journal-page) {
+  perspective: var(--page-turn-perspective);
+}
+
+::view-transition-old(journal-page),
+::view-transition-new(journal-page) {
+  height: 100%;
+  mix-blend-mode: normal;
+  object-fit: cover;
+  animation-duration: var(--page-turn-duration);
+  animation-timing-function: cubic-bezier(0.32, 0, 0.18, 1);
+  animation-fill-mode: both;
+}
+
+html[data-page-turn-direction="next"]::view-transition-old(journal-page),
+html[data-astro-transition="forward"]:not([data-page-turn-direction])::view-transition-old(journal-page) {
+  z-index: 2;
+  transform-origin: left center;
+  animation-name: journal-page-turn-next-out;
+}
+
+html[data-page-turn-direction="next"]::view-transition-new(journal-page),
+html[data-astro-transition="forward"]:not([data-page-turn-direction])::view-transition-new(journal-page) {
+  z-index: 1;
+  animation-name: journal-page-turn-next-in;
+}
+
+html[data-page-turn-direction="previous"]::view-transition-old(journal-page),
+html[data-astro-transition="back"]:not([data-page-turn-direction])::view-transition-old(journal-page) {
+  z-index: 2;
+  transform-origin: right center;
+  animation-name: journal-page-turn-previous-out;
+}
+
+html[data-page-turn-direction="previous"]::view-transition-new(journal-page),
+html[data-astro-transition="back"]:not([data-page-turn-direction])::view-transition-new(journal-page) {
+  z-index: 1;
+  animation-name: journal-page-turn-previous-in;
+}
+
+@keyframes journal-page-turn-next-out {
+  0% {
+    clip-path: inset(0);
+    filter: drop-shadow(0 0 0 transparent);
+    transform: translateX(0) rotateY(0);
+  }
+
+  55% {
+    filter: drop-shadow(
+      var(--page-turn-shadow-offset) 0 var(--page-turn-shadow-blur)
+      rgb(3 17 25 / var(--page-turn-shadow-strength))
+    );
+  }
+
+  100% {
+    clip-path: inset(0 100% 0 0);
+    filter: drop-shadow(
+      var(--page-turn-shadow-offset) 0 var(--page-turn-shadow-blur)
+      transparent
+    );
+    transform: translateX(calc(-1 * var(--page-turn-distance))) rotateY(calc(-1 * var(--page-turn-rotation)));
+  }
+}
+
+@keyframes journal-page-turn-next-in {
+  from {
+    filter: brightness(0.94);
+    transform: translateX(var(--page-turn-incoming-distance)) scale(0.995);
+  }
+
+  to {
+    filter: brightness(1);
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes journal-page-turn-previous-out {
+  0% {
+    clip-path: inset(0);
+    filter: drop-shadow(0 0 0 transparent);
+    transform: translateX(0) rotateY(0);
+  }
+
+  55% {
+    filter: drop-shadow(
+      calc(-1 * var(--page-turn-shadow-offset)) 0 var(--page-turn-shadow-blur)
+      rgb(3 17 25 / var(--page-turn-shadow-strength))
+    );
+  }
+
+  100% {
+    clip-path: inset(0 0 0 100%);
+    filter: drop-shadow(
+      calc(-1 * var(--page-turn-shadow-offset)) 0 var(--page-turn-shadow-blur)
+      transparent
+    );
+    transform: translateX(var(--page-turn-distance)) rotateY(var(--page-turn-rotation));
+  }
+}
+
+@keyframes journal-page-turn-previous-in {
+  from {
+    filter: brightness(0.94);
+    transform: translateX(calc(-1 * var(--page-turn-incoming-distance))) scale(0.995);
+  }
+
+  to {
+    filter: brightness(1);
+    transform: translateX(0) scale(1);
+  }
 }
 
 .journal-header {
@@ -74,7 +260,7 @@
   mix-blend-mode: multiply;
 }
 
-.journal-content p:has(> img:only-child) {
+.journal-content :is(p:has(> img:only-child), .journal-figure) {
   position: relative;
   width: min(88%, 34rem);
   margin: 4rem auto;
@@ -85,8 +271,8 @@
   transform: rotate(-1.15deg);
 }
 
-.journal-content p:has(> img:only-child)::before,
-.journal-content p:has(> img:only-child)::after {
+.journal-content :is(p:has(> img:only-child), .journal-figure)::before,
+.journal-content :is(p:has(> img:only-child), .journal-figure)::after {
   position: absolute;
   z-index: 1;
   width: clamp(4.5rem, 15vw, 7rem);
@@ -98,16 +284,59 @@
   pointer-events: none;
 }
 
-.journal-content p:has(> img:only-child)::before {
+.journal-content :is(p:has(> img:only-child), .journal-figure)::before {
   top: -0.8rem;
   left: 8%;
   transform: rotate(-5deg);
 }
 
-.journal-content p:has(> img:only-child)::after {
+.journal-content :is(p:has(> img:only-child), .journal-figure)::after {
   right: 7%;
   bottom: -0.75rem;
   transform: rotate(4deg);
+}
+
+/*
+ * Entry artwork whose filename starts with "sketch-" is treated as a drawing
+ * on the journal page rather than as a taped-in photograph.
+ */
+.journal-content :is(p:has(> img[src*="/sketch-"]:only-child), .journal-figure:has(> img[src*="/sketch-"])) {
+  width: min(42%, 18rem);
+  margin: 0.45rem -1.75rem 1.5rem 2rem;
+  padding: 0;
+  float: right;
+  clear: right;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  transform: rotate(1.35deg);
+}
+
+.journal-content :is(p:has(> img[src*="/sketch-"]:only-child), .journal-figure:has(> img[src*="/sketch-"]))::before,
+.journal-content :is(p:has(> img[src*="/sketch-"]:only-child), .journal-figure:has(> img[src*="/sketch-"]))::after {
+  content: none;
+}
+
+.journal-content img[src*="/sketch-"] {
+  opacity: 0.9;
+  filter: contrast(1.08);
+}
+
+.journal-figure figcaption {
+  margin: 0.85rem 0.35rem 0.15rem;
+  color: var(--ink-faded);
+  font-family: var(--font-ui);
+  font-size: 0.76rem;
+  font-style: italic;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.journal-figure:has(> img[src*="/sketch-"]) figcaption {
+  margin-inline: 0;
+  color: var(--ink-soft);
+  font-family: var(--font-hand);
+  font-size: 0.8rem;
 }
 
 .journal-content blockquote {
@@ -191,6 +420,19 @@
 }
 
 @media (max-width: 700px) {
+  .back-to-entry-top {
+    padding: 0.72rem;
+  }
+
+  .back-to-entry-top-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
   .journal-page {
     margin: 0 0.75rem;
     padding: 2.5rem 1.5rem;
@@ -218,9 +460,23 @@
     order: 3;
   }
 
-  .journal-content p:has(> img:only-child) {
+  .journal-content :is(p:has(> img:only-child), .journal-figure) {
     width: 94%;
     margin: 3rem auto;
     transform: rotate(-0.65deg);
+  }
+
+  .journal-content :is(p:has(> img[src*="/sketch-"]:only-child), .journal-figure:has(> img[src*="/sketch-"])) {
+    width: min(82%, 20rem);
+    margin: 2.25rem auto;
+    float: none;
+    transform: rotate(0.8deg);
+  }
+}
+
+@media print {
+  .reading-progress,
+  .back-to-entry-top {
+    display: none !important;
   }
 }

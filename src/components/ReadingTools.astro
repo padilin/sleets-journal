@@ -1,0 +1,54 @@
+<div class="reading-progress" aria-hidden="true">
+  <span></span>
+</div>
+
+<a class="back-to-entry-top" href="#journal-entry" aria-label="Back to the top of this journal entry" hidden>
+  <span aria-hidden="true">↑</span>
+  <span class="back-to-entry-top-label">Back to top</span>
+</a>
+
+<script>
+  import { calculateReadingProgress, shouldShowBackToTop } from "../utils/reading-tools.mjs";
+
+  let updateFrame: number | undefined;
+  let observedArticle: Element | undefined;
+
+  const resizeObserver = new ResizeObserver(() => requestReadingToolsUpdate());
+
+  function updateReadingTools() {
+    updateFrame = undefined;
+
+    const article = document.querySelector<HTMLElement>("#journal-entry");
+    const progressElement = document.querySelector<HTMLElement>(".reading-progress");
+    const backToTop = document.querySelector<HTMLAnchorElement>(".back-to-entry-top");
+
+    if (!article || !progressElement || !backToTop) return;
+
+    if (observedArticle !== article) {
+      if (observedArticle) resizeObserver.unobserve(observedArticle);
+      resizeObserver.observe(article);
+      observedArticle = article;
+    }
+
+    const articleTop = window.scrollY + article.getBoundingClientRect().top;
+    const progress = calculateReadingProgress(
+      window.scrollY,
+      articleTop,
+      article.offsetHeight,
+      window.innerHeight,
+    );
+
+    progressElement.style.setProperty("--reading-progress", String(progress));
+    backToTop.hidden = !shouldShowBackToTop(progress, article.offsetHeight, window.innerHeight);
+  }
+
+  function requestReadingToolsUpdate() {
+    if (updateFrame !== undefined) return;
+    updateFrame = window.requestAnimationFrame(updateReadingTools);
+  }
+
+  window.addEventListener("scroll", requestReadingToolsUpdate, { passive: true });
+  window.addEventListener("resize", requestReadingToolsUpdate);
+  document.addEventListener("astro:page-load", requestReadingToolsUpdate);
+  requestReadingToolsUpdate();
+</script>
