@@ -29,9 +29,11 @@ const { Content } = await render(entry);
 
 <JournalLayout
   title={entry.data.title}
+  summary={entry.data.summary ?? "A journal entry from Sleet's adventures."}
   entry={entry.data.entry}
   dateDisplay={entry.data.date_display}
   location={entry.data.location}
+  social={entry.data.social}
   previous={previous && { href: `/journal/${previous.id}/`, title: previous.data.title }}
   next={next && { href: `/journal/${next.id}/`, title: next.data.title }}
 >

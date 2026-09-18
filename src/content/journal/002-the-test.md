@@ -1,11 +1,11 @@
 ---
-title: "Backstory"
-summary: "Sleet recalls his isolated childhood and the journey that first carried him beyond the frozen plains."
-entry: 1
+title: "Test"
+summary: "This is where the player is testing."
+entry: 2
 session: 1
-date: "0000-00-00"
+date: "0000-00-01"
 date_display: "Unknown"
-session_date: "2026-09-12"
+session_date: "2026-09-13"
 location: "The World"
 people: []
 tags:
@@ -18,15 +18,25 @@ There was always something that needed doing if we wanted to survive. Gather wha
 
 I don't remember exactly when I decided I couldn't take it anymore. There wasn't a fight or some great disaster. I just decided to leave. I said goodbye to my parents and took what I could carry. I'm still not sure what they thought about the whole thing. About my adventure.
 
+![This.](../../assets/journal/002/comparison.jpg) "A comparison."
+
 Well, it turns out the world isn't as warm as I expected.
+
+![This.](../../assets/journal/002/sketch-comparison.jpg) A comparison.
 
 The snow thins the farther south you walk. Underneath it there are colors everywhere. I had never seen so much green. The villages are stranger still. Some are hardly more than a few tents. Others have walls, streets, and permanent buildings large enough that I think my entire village could fit inside one.
 
 Surviving out here is easier in some ways. There is far more prey, and plants seem to grow almost everywhere. Food is also more troublesome than I expected. Meat goes rancid incredibly quickly when you don't have the cold to keep it. I learned that lesson more than once. Better to throw spoiled meat to the wolves than fight them over something I shouldn't eat anyway.
 
+![A quick field sketch of a narrow trail winding between snow-covered pine trees, crossed by animal tracks.](../../assets/journal/002/sketch-clean.webp)
+
 Forests were strange at first. So many trees packed together that you can't see the horizon. I was surprised to learn that many people avoid them. I rather like them now. They're quiet. When I want company I can return to the roads and towns, and when I don't, the woods give me plenty of room.
 
+![A quick field sketch of a narrow trail winding between snow-covered pine trees, crossed by animal tracks.](../../assets/journal/002/sketch-natural.webp)
+
 Eventually I learned that people will pay someone who knows how to move through the wilderness. Guiding travelers, hunting, finding trails, keeping watch. It all came naturally enough. Money was the part I had to learn.
+
+![A quick field sketch of a narrow trail winding between snow-covered pine trees, crossed by animal tracks.](../../assets/journal/002/sketch-cutout.png)
 
 It turns out money is useful.
 

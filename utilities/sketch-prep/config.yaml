@@ -1,0 +1,35 @@
+# Defaults used for every photograph unless an override says otherwise.
+processing:
+  default_mode: content
+  detection_max_dimension: 1800
+  minimum_page_area_ratio: 0.20
+  confidence_threshold: 0.58
+  content_darkness_threshold: 8
+  content_grouping_radius: 0.065
+  content_padding: 0.12
+  output_width: 1800
+  webp_quality: 86
+
+natural:
+  illumination_correction: 0.24
+  contrast: 1.035
+  saturation: 0.92
+  sharpen: 0.20
+
+clean:
+  clahe_clip_limit: 1.10
+  background_value: 248
+  contrast: 1.05
+  sharpen: 0.24
+  content_padding: 0.10
+
+cutout:
+  ink_color: "#18252e"
+  noise_floor: 12
+  full_opacity: 70
+  opacity_gamma: 0.75
+  content_padding: 0.08
+
+# Small inline overrides may be keyed by source filename here. The manual crop
+# editor stores larger per-image overrides in overrides/<filename>.yaml instead.
+overrides: {}
