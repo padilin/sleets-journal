@@ -59,7 +59,7 @@ def parse_args() -> argparse.Namespace:
 def load_config(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         config = yaml.safe_load(handle) or {}
-    for section in ("processing", "natural", "clean"):
+    for section in ("processing", "natural", "clean", "cutout"):
         if section not in config or not isinstance(config[section], dict):
             raise ValueError(f"Missing mapping in configuration: {section}")
     config.setdefault("overrides", {})
@@ -397,6 +397,79 @@ def render_clean(master_rgb: np.ndarray, settings: dict[str, Any]) -> tuple[Imag
     return image.convert("RGB"), bounds
 
 
+def parse_hex_color(value: str) -> tuple[int, int, int]:
+    color = value.removeprefix("#")
+    if len(color) != 6:
+        raise ValueError(f"Expected a six-digit hex color, received {value!r}")
+    try:
+        return tuple(int(color[index : index + 2], 16) for index in (0, 2, 4))
+    except ValueError as error:
+        raise ValueError(f"Invalid hex color: {value!r}") from error
+
+
+def render_cutout(
+    master_rgb: np.ndarray,
+    cutout_settings: dict[str, Any],
+) -> tuple[Image.Image, tuple[int, int, int, int]]:
+    gray = cv2.cvtColor(master_rgb, cv2.COLOR_RGB2GRAY)
+    sigma = max(15.0, min(gray.shape) / 18.0)
+    local_background = cv2.GaussianBlur(gray, (0, 0), sigmaX=sigma, sigmaY=sigma)
+    darkness = np.maximum(local_background.astype(np.float32) - gray.astype(np.float32), 0.0)
+    noise_floor = float(cutout_settings["noise_floor"])
+    full_opacity = float(cutout_settings["full_opacity"])
+    if full_opacity <= noise_floor:
+        raise ValueError("cutout.full_opacity must be greater than cutout.noise_floor")
+
+    opacity = np.clip((darkness - noise_floor) / (full_opacity - noise_floor), 0.0, 1.0)
+    opacity = np.power(opacity, float(cutout_settings["opacity_gamma"]))
+    alpha = np.round(opacity * 255.0).astype(np.uint8)
+    alpha[alpha < 5] = 0
+
+    # Remove isolated paper flecks while keeping connected pencil strokes.
+    binary = np.where(alpha > 0, 255, 0).astype(np.uint8)
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(binary, connectivity=8)
+    minimum_area = max(6, round(alpha.shape[0] * alpha.shape[1] * 0.000003))
+    retained = np.zeros_like(alpha)
+    for label in range(1, count):
+        x, y, component_width, component_height, area = stats[label]
+        touches_border = (
+            x <= 1
+            or y <= 1
+            or x + component_width >= alpha.shape[1] - 1
+            or y + component_height >= alpha.shape[0] - 1
+        )
+        aspect = max(component_width / max(component_height, 1), component_height / max(component_width, 1))
+        border_line = touches_border and aspect > 8 and (
+            component_width > alpha.shape[1] * 0.20 or component_height > alpha.shape[0] * 0.20
+        )
+        if area >= minimum_area and not border_line:
+            retained[labels == label] = alpha[labels == label]
+    alpha = retained
+
+    y_values, x_values = np.where(alpha > 0)
+    if len(x_values) == 0:
+        bounds = (0, 0, alpha.shape[1], alpha.shape[0])
+    else:
+        left, right = int(x_values.min()), int(x_values.max()) + 1
+        top, bottom = int(y_values.min()), int(y_values.max()) + 1
+        padding = round(min(right - left, bottom - top) * float(cutout_settings["content_padding"]))
+        bounds = (
+            max(0, left - padding),
+            max(0, top - padding),
+            min(alpha.shape[1], right + padding),
+            min(alpha.shape[0], bottom + padding),
+        )
+
+    red, green, blue = parse_hex_color(str(cutout_settings["ink_color"]))
+    rgba = np.empty((*alpha.shape, 4), dtype=np.uint8)
+    rgba[:, :, 0] = red
+    rgba[:, :, 1] = green
+    rgba[:, :, 2] = blue
+    rgba[:, :, 3] = alpha
+    left, top, right, bottom = bounds
+    return Image.fromarray(rgba[top:bottom, left:right], mode="RGBA"), bounds
+
+
 def resize_for_web(image: Image.Image, width: int) -> Image.Image:
     if image.width <= width:
         return image.copy()
@@ -404,21 +477,21 @@ def resize_for_web(image: Image.Image, width: int) -> Image.Image:
     return image.resize((width, height), Image.Resampling.LANCZOS)
 
 
-def make_comparison(natural: Image.Image, clean: Image.Image) -> Image.Image:
-    panel_width = 900
+def make_comparison(natural: Image.Image, clean: Image.Image, cutout: Image.Image) -> Image.Image:
+    panel_width = 600
     label_height = 60
     panels: list[Image.Image] = []
-    for label, source in (("Natural page", natural), ("Clean sketch", clean)):
+    for label, source in (("Natural page", natural), ("Clean sketch", clean), ("Transparent cutout", cutout)):
         image = resize_for_web(source, panel_width)
         panel = Image.new("RGB", (panel_width, image.height + label_height), "#f3f0e7")
-        panel.paste(image, ((panel_width - image.width) // 2, label_height))
+        panel.paste(image, ((panel_width - image.width) // 2, label_height), image if image.mode == "RGBA" else None)
         draw = ImageDraw.Draw(panel)
         draw.text((24, 20), label, fill="#18252e")
         panels.append(panel)
     common_height = max(panel.height for panel in panels)
-    comparison = Image.new("RGB", (panel_width * 2 + 4, common_height), "#f3f0e7")
-    comparison.paste(panels[0], (0, 0))
-    comparison.paste(panels[1], (panel_width + 4, 0))
+    comparison = Image.new("RGB", (panel_width * 3 + 8, common_height), "#f3f0e7")
+    for index, panel in enumerate(panels):
+        comparison.paste(panel, (index * (panel_width + 4), 0))
     return comparison
 
 
@@ -498,15 +571,20 @@ def prepare_one(source: Path, output_root: Path, config: dict[str, Any], force: 
 
     natural = render_natural(master, config["natural"])
     clean, clean_bounds = render_clean(master, config["clean"])
+    cutout, cutout_bounds = render_cutout(master, config["cutout"])
     output_width = int(config["processing"]["output_width"])
     quality = int(config["processing"]["webp_quality"])
     natural_web = resize_for_web(natural, output_width)
     clean_web = resize_for_web(clean, output_width)
+    cutout_web = resize_for_web(cutout, output_width)
 
     Image.fromarray(master).save(destination / "rectified.png", format="PNG", optimize=True)
     natural_web.save(destination / "natural.webp", format="WEBP", quality=quality, method=6)
     clean_web.save(destination / "clean.webp", format="WEBP", quality=quality, method=6)
-    make_comparison(natural_web, clean_web).save(destination / "comparison.jpg", format="JPEG", quality=90, optimize=True)
+    cutout_web.save(destination / "cutout.png", format="PNG", optimize=True)
+    make_comparison(natural_web, clean_web, cutout_web).save(
+        destination / "comparison.jpg", format="JPEG", quality=90, optimize=True
+    )
     debug_overlay(oriented, corners=corners, bounds=content_bounds).save(
         destination / "detection-debug.jpg", format="JPEG", quality=88, optimize=True
     )
@@ -530,10 +608,12 @@ def prepare_one(source: Path, output_root: Path, config: dict[str, Any], force: 
         },
         "rectified_dimensions": {"width": int(master.shape[1]), "height": int(master.shape[0])},
         "clean_content_bounds": list(clean_bounds),
+        "cutout_content_bounds": list(cutout_bounds),
         "outputs": [
             "rectified.png",
             "natural.webp",
             "clean.webp",
+            "cutout.png",
             "comparison.jpg",
             "detection-debug.jpg",
             *(["content-mask.png"] if content_mask is not None else []),

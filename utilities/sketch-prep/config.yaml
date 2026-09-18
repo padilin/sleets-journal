@@ -23,6 +23,13 @@ clean:
   sharpen: 0.24
   content_padding: 0.10
 
+cutout:
+  ink_color: "#18252e"
+  noise_floor: 12
+  full_opacity: 70
+  opacity_gamma: 0.75
+  content_padding: 0.08
+
 # Small inline overrides may be keyed by source filename here. The manual crop
 # editor stores larger per-image overrides in overrides/<filename>.yaml instead.
 overrides: {}

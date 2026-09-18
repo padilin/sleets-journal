@@ -4,6 +4,7 @@ This utility turns photographed sketches into two complementary web treatments w
 
 - **Natural page** retains restrained paper color, texture, and margins.
 - **Clean sketch** normalizes uneven lighting, converts to grayscale, and crops around the marks.
+- **Transparent cutout** converts pencil pressure into partial alpha and tints the graphite with the journal ink color.
 
 Each image also receives a lossless rectified master, a side-by-side comparison, a page-detection overlay, and machine-readable metadata.
 
@@ -32,11 +33,16 @@ Generated files appear under `output/sketch-1/`:
 rectified.png       lossless corrected master
 natural.webp        paper-preserving web treatment
 clean.webp          normalized, tightly cropped web treatment
-comparison.jpg      natural and clean versions side by side
+cutout.png          graphite-colored sketch on transparency
+comparison.jpg      natural, clean, and transparent treatments side by side
 detection-debug.jpg detected content bounds or page corners
 content-mask.png     pencil marks considered during content detection
 metadata.json       source hash, geometry, confidence, and output details
 ```
+
+The comparison composites the transparent cutout over the journal's paper color so it can be judged in context. `cutout.png` itself has a real alpha channel and can be copied into an entry's asset directory with a filename beginning `sketch-`.
+
+The journal renderer assigns every standalone `sketch-` image a stable path-derived decorative rotation between 3 and 8 degrees, clockwise or counterclockwise. Rotation is applied in CSS rather than baked into the file, keeping the generated asset reusable and preventing the angle from changing between page loads.
 
 Existing output is not replaced unless `--force` is supplied.
 

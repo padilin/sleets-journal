@@ -8,6 +8,8 @@ from prepare_sketches import (
     detect_page,
     find_content_bounds,
     order_corners,
+    parse_hex_color,
+    render_cutout,
     validate_manual_bounds,
     warp_page,
 )
@@ -74,6 +76,26 @@ class SketchPreparationTests(unittest.TestCase):
             validate_manual_bounds([20, 30, 900, 400], 800, 600)
         with self.assertRaisesRegex(ValueError, "at least"):
             validate_manual_bounds([20, 30, 25, 35], 800, 600)
+
+    def test_transparent_cutout_preserves_stroke_opacity(self):
+        image = np.full((240, 320, 3), 245, dtype=np.uint8)
+        cv2.line(image, (80, 70), (240, 170), (65, 65, 65), 10)
+        cutout_settings = {
+            "ink_color": "#18252e",
+            "noise_floor": 12,
+            "full_opacity": 70,
+            "opacity_gamma": 0.75,
+            "content_padding": 0.08,
+        }
+
+        cutout, bounds = render_cutout(image, cutout_settings)
+
+        self.assertEqual(cutout.mode, "RGBA")
+        self.assertEqual(parse_hex_color("#18252e"), (24, 37, 46))
+        alpha = np.asarray(cutout)[:, :, 3]
+        self.assertEqual(int(alpha.min()), 0)
+        self.assertGreater(int(alpha.max()), 200)
+        self.assertGreater(bounds[0], 0)
 
 
 if __name__ == "__main__":

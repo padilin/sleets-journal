@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { rehypeFigureCaptions } from "../scripts/rehype-figure-captions.mjs";
+import { rehypeFigureCaptions, sketchRotation } from "../scripts/rehype-figure-captions.mjs";
 
 function paragraphWithImage(properties, additionalChildren = []) {
   return {
@@ -56,4 +56,35 @@ test("leaves an image mixed with paragraph text unchanged", () => {
   rehypeFigureCaptions()(tree);
 
   assert.equal(tree.children[0].tagName, "p");
+});
+
+test("assigns a stable path-derived tilt to standalone sketch images", () => {
+  const tree = paragraphWithImage({ src: "/assets/sketch-fox.png", alt: "A fox sketch" });
+
+  rehypeFigureCaptions()(tree);
+
+  const angle = sketchRotation("/assets/sketch-fox.png");
+  assert.ok(Math.abs(angle) >= 3 && Math.abs(angle) <= 8);
+  assert.equal(sketchRotation("/assets/sketch-fox.png"), angle);
+  assert.equal(tree.children[0].properties.style, `--sketch-rotation: ${angle.toFixed(2)}deg`);
+});
+
+test("carries sketch tilt onto a generated figure", () => {
+  const tree = paragraphWithImage({
+    src: "/assets/sketch-owl.png",
+    alt: "An owl sketch",
+    title: "Owl study.",
+  });
+
+  rehypeFigureCaptions()(tree);
+
+  assert.match(tree.children[0].properties.style, /^--sketch-rotation: -?\d+\.\d{2}deg$/);
+});
+
+test("does not assign tilt styling to ordinary photographs", () => {
+  const tree = paragraphWithImage({ src: "/assets/sleet.png", alt: "Sleet" });
+
+  rehypeFigureCaptions()(tree);
+
+  assert.equal(tree.children[0].properties.style, undefined);
 });

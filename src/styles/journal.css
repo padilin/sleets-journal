@@ -317,7 +317,7 @@ html[data-astro-transition="back"]:not([data-page-turn-direction])::view-transit
   background: transparent;
   border: 0;
   box-shadow: none;
-  transform: rotate(1.35deg);
+  transform: rotate(var(--sketch-rotation, 1.35deg));
 }
 
 .journal-content :is(p:has(> img[src*="/sketch-"]:only-child), .journal-figure:has(> img[src*="/sketch-"]))::before,
@@ -478,7 +478,7 @@ html[data-astro-transition="back"]:not([data-page-turn-direction])::view-transit
     width: min(82%, 20rem);
     margin: 2.25rem auto;
     float: none;
-    transform: rotate(0.8deg);
+    transform: rotate(var(--sketch-rotation, 0.8deg));
   }
 }
 
