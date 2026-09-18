@@ -36,7 +36,7 @@ Forests were strange at first. So many trees packed together that you can't see 
 
 Eventually I learned that people will pay someone who knows how to move through the wilderness. Guiding travelers, hunting, finding trails, keeping watch. It all came naturally enough. Money was the part I had to learn.
 
-![A quick field sketch of a narrow trail winding between snow-covered pine trees, crossed by animal tracks.](../../assets/journal/002/sketch-cutout.webp)
+![A quick field sketch of a narrow trail winding between snow-covered pine trees, crossed by animal tracks.](../../assets/journal/002/sketch-cutout.png)
 
 It turns out money is useful.
 
