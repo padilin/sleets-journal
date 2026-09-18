@@ -58,15 +58,22 @@ test("leaves an image mixed with paragraph text unchanged", () => {
   assert.equal(tree.children[0].tagName, "p");
 });
 
-test("assigns a stable path-derived tilt to standalone sketch images", () => {
-  const tree = paragraphWithImage({ src: "/assets/sketch-fox.png", alt: "A fox sketch" });
+test("assigns the stable varied sequence to sketches in document order", () => {
+  const tree = {
+    type: "root",
+    children: [
+      paragraphWithImage({ src: "/assets/sketch-fox.png", alt: "A fox sketch" }).children[0],
+      paragraphWithImage({ src: "/assets/sketch-owl.png", alt: "An owl sketch" }).children[0],
+      paragraphWithImage({ src: "/assets/sketch-trail.png", alt: "A trail sketch" }).children[0],
+    ],
+  };
 
   rehypeFigureCaptions()(tree);
 
-  const angle = sketchRotation("/assets/sketch-fox.png");
-  assert.ok(Math.abs(angle) >= 3 && Math.abs(angle) <= 8);
-  assert.equal(sketchRotation("/assets/sketch-fox.png"), angle);
-  assert.equal(tree.children[0].properties.style, `--sketch-rotation: ${angle.toFixed(2)}deg`);
+  assert.equal(tree.children[0].properties.style, "--sketch-rotation: -8deg");
+  assert.equal(tree.children[1].properties.style, "--sketch-rotation: 5deg");
+  assert.equal(tree.children[2].properties.style, "--sketch-rotation: -3.5deg");
+  assert.equal(sketchRotation(8), -8);
 });
 
 test("carries sketch tilt onto a generated figure", () => {
@@ -78,7 +85,19 @@ test("carries sketch tilt onto a generated figure", () => {
 
   rehypeFigureCaptions()(tree);
 
-  assert.match(tree.children[0].properties.style, /^--sketch-rotation: -?\d+\.\d{2}deg$/);
+  assert.equal(tree.children[0].properties.style, "--sketch-rotation: -8deg");
+});
+
+test("tilts a sketch that shares its paragraph with text without converting it to a figure", () => {
+  const tree = paragraphWithImage(
+    { src: "/assets/sketch-map.png", alt: "A map sketch" },
+    [{ type: "text", value: " A note beside the sketch." }],
+  );
+
+  rehypeFigureCaptions()(tree);
+
+  assert.equal(tree.children[0].tagName, "p");
+  assert.equal(tree.children[0].properties.style, "--sketch-rotation: -8deg");
 });
 
 test("does not assign tilt styling to ordinary photographs", () => {

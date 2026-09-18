@@ -42,7 +42,7 @@ metadata.json       source hash, geometry, confidence, and output details
 
 The comparison composites the transparent cutout over the journal's paper color so it can be judged in context. `cutout.png` itself has a real alpha channel and can be copied into an entry's asset directory with a filename beginning `sketch-`.
 
-The journal renderer assigns every standalone `sketch-` image a stable path-derived decorative rotation between 3 and 8 degrees, clockwise or counterclockwise. Rotation is applied in CSS rather than baked into the file, keeping the generated asset reusable and preventing the angle from changing between page loads.
+The journal renderer assigns `sketch-` images a stable eight-angle sequence in document order: `-8`, `+5`, `-3.5`, `+7`, `-5.5`, `+3`, `-7`, and `+4.5` degrees. The sequence then repeats. This guarantees visibly varied directions and magnitudes while remaining stable across reloads. Rotation is applied in CSS rather than baked into the file, keeping the generated asset reusable. A sketch may share its paragraph with text and still receive the next angle; only standalone titled images are converted into semantic figures.
 
 Existing output is not replaced unless `--force` is supplied.
 
